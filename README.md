@@ -1,14 +1,13 @@
 # 🚀 Tbotics Education Website
 
-![Tbotics Web Preview](https://via.placeholder.com/1200x600/0f172a/38bdf8?text=Tbotics+Education+Website)
-*(Ganti link gambar di atas dengan link screenshot halaman web kamu)*
+![Tbotics Web Preview](https://github.com/user-attachments/assets/168b5bdb-6595-4fb8-8d22-47e5217acb6a)
 
-Selamat datang di *repository* resmi **Tbotics Education**! 
+Selamat datang di *repository* Portofolio **Tbotics Education**! 
 Website ini adalah platform interaktif yang dirancang untuk memperkenalkan dunia robotika dan *Internet of Things* (IoT) kepada generasi inovator muda, mulai dari tingkat SD hingga SMP.
 
 Dibuat dengan antarmuka futuristik, *dark mode* yang elegan, dan maskot robot 3D interaktif untuk membuat pengalaman belajar teknologi menjadi menyenangkan.
 
-🌐 **Kunjungi Website Live:** [https://<USERNAME_GITHUB_ANDA>.github.io/tbotics-web/](https://<USERNAME_GITHUB_ANDA>.github.io/tbotics-web/)
+🌐 **Kunjungi Website Live:** [https://bagasluthfi123.github.io/Portofolio-Tbotics-Education/#beranda](https://<USERNAME_GITHUB_ANDA>.github.io/tbotics-web)
 
 ---
 
@@ -51,7 +50,7 @@ Jika kamu ingin mengembangkan atau mengedit website ini di komputer lokal, ikuti
    ```bash
    npm run dev
 
-5. **Buka http://localhost:5173 di browser kesayanganmu!**
+5. **Buka di browser kesayanganmu!**
    ```bash
    http://localhost:5173
 
