@@ -30,28 +30,4 @@ Proyek ini dibangun menggunakan teknologi *web modern* terkini untuk performa ya
 * **[Framer Motion](https://www.framer.com/motion/)**: Untuk animasi transisi *fade-in* dan elemen UI.
 * **[Lenis](https://lenis.darkroom.engineering/)**: Menghasilkan efek *smooth scroll* yang elegan.
 
-## 💻 Cara Menjalankan di Komputer Lokal
-
-Jika kamu ingin mengembangkan atau mengedit website ini di komputer lokal, ikuti langkah-langkah berikut:
-
-1. **Clone repository ini**
-   ```bash
-   git clone https://github.com/bagasluthfi123/Portofolio-Tbotics-Education.git
-   
-2. **Masuk ke folder proyek**
-   ```bash
-   cd tbotics-web
-   
-3. **Install semua dependencies (paket yang dibutuhkan)**
-   ```bash
-   npm install
-
-4. **Jalankan server pengembangan**
-   ```bash
-   npm run dev
-
-5. **Buka di browser kesayanganmu!**
-   ```bash
-   http://localhost:5173
-
 Dibuat dengan 💙 oleh Tim Tbotics Education. Mari bangun mesin masa depan, hari ini!
