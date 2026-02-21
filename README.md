@@ -1,0 +1,58 @@
+# 🚀 Tbotics Education Website
+
+![Tbotics Web Preview](https://via.placeholder.com/1200x600/0f172a/38bdf8?text=Tbotics+Education+Website)
+*(Ganti link gambar di atas dengan link screenshot halaman web kamu)*
+
+Selamat datang di *repository* resmi **Tbotics Education**! 
+Website ini adalah platform interaktif yang dirancang untuk memperkenalkan dunia robotika dan *Internet of Things* (IoT) kepada generasi inovator muda, mulai dari tingkat SD hingga SMP.
+
+Dibuat dengan antarmuka futuristik, *dark mode* yang elegan, dan maskot robot 3D interaktif untuk membuat pengalaman belajar teknologi menjadi menyenangkan.
+
+🌐 **Kunjungi Website Live:** [https://<USERNAME_GITHUB_ANDA>.github.io/tbotics-web/](https://<USERNAME_GITHUB_ANDA>.github.io/tbotics-web/)
+
+---
+
+## ✨ Fitur Utama
+
+Website ini terdiri dari 5 bagian utama yang dianimasikan secara mulus:
+- **🏠 Beranda (Hero Section):** Menampilkan Maskot Robot 3D gemoy yang bisa mengikuti arah kursor (*mouse tracking*) dan memiliki berbagai ekspresi lucu secara otomatis.
+- **📖 Tentang Kami:** Visi dan misi Tbotics dalam mencetak generasi melek teknologi.
+- **🗺️ Roadmap Belajar:** Alur pembelajaran terstruktur yang mudah dipahami oleh pemula.
+- **💻 Program Kursus:** Katalog kelas interaktif dari level dasar hingga mahir.
+- **📞 Kontak:** Akses mudah untuk konsultasi dan pendaftaran.
+
+## 🛠️ Teknologi yang Digunakan
+
+Proyek ini dibangun menggunakan teknologi *web modern* terkini untuk performa yang cepat dan animasi yang interaktif:
+
+* **[React 19](https://react.dev/)** + **[Vite](https://vitejs.dev/)**: *Framework* dan *build tool* utama yang super cepat.
+* **[Tailwind CSS](https://tailwindcss.com/)**: *Utility-first* CSS untuk *styling* yang responsif dan efek *glowing* neon.
+* **[Three.js](https://threejs.org/)** & **[React Three Fiber](https://docs.pmnd.rs/react-three-fiber/)**: *Library* 3D untuk merender maskot robot langsung di dalam *browser*.
+* **[Framer Motion](https://www.framer.com/motion/)**: Untuk animasi transisi *fade-in* dan elemen UI.
+* **[Lenis](https://lenis.darkroom.engineering/)**: Menghasilkan efek *smooth scroll* yang elegan.
+
+## 💻 Cara Menjalankan di Komputer Lokal
+
+Jika kamu ingin mengembangkan atau mengedit website ini di komputer lokal, ikuti langkah-langkah berikut:
+
+1. **Clone repository ini**
+   ```bash
+   git clone [https://github.com/](https://github.com/)<USERNAME_GITHUB_ANDA>/tbotics-web.git
+   
+2. **Masuk ke folder proyek**
+   ```bash
+   cd tbotics-web
+   
+3. **Install semua dependencies (paket yang dibutuhkan)**
+   ```bash
+   npm install
+
+4. **Jalankan server pengembangan**
+   ```bash
+   npm run dev
+
+5. **Buka http://localhost:5173 di browser kesayanganmu!**
+   ```bash
+   http://localhost:5173
+
+Dibuat dengan 💙 oleh Tim Tbotics Education. Mari bangun mesin masa depan, hari ini!
