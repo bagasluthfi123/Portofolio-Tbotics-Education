@@ -30,4 +30,4 @@ Proyek ini dibangun menggunakan teknologi *web modern* terkini untuk performa ya
 * **[Framer Motion](https://www.framer.com/motion/)**: Untuk animasi transisi *fade-in* dan elemen UI.
 * **[Lenis](https://lenis.darkroom.engineering/)**: Menghasilkan efek *smooth scroll* yang elegan.
 
-Dibuat dengan 💙 oleh Tim Tbotics Education. Mari bangun mesin masa depan, hari ini!
+Dibuat dengan 💙 oleh Tim Tbotics Education - Bagas Ahmad Faizal. Mari bangun mesin masa depan, hari ini!
