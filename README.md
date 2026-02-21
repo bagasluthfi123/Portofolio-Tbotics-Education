@@ -36,7 +36,7 @@ Jika kamu ingin mengembangkan atau mengedit website ini di komputer lokal, ikuti
 
 1. **Clone repository ini**
    ```bash
-   git clone [https://github.com/](https://github.com/)<USERNAME_GITHUB_ANDA>/tbotics-web.git
+   git clone https://github.com/bagasluthfi123/Portofolio-Tbotics-Education.git
    
 2. **Masuk ke folder proyek**
    ```bash
