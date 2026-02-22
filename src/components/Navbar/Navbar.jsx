@@ -1,31 +1,67 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
-// 1. Import file gambar logonya dari folder assets
-// Pastikan penulisan namanya sama persis dengan yang ada di folder Anda
 import logoWhite from '../../assets/Logo Tbotics White.png';
 
-export default function Navbar() {
+// WAJIB ADA { setCurrentPage } di dalam kurung ini
+export default function Navbar({ setCurrentPage }) {
   const [isOpen, setIsOpen] = useState(false);
-  const links = ['Beranda', 'Tentang', 'Roadmap', 'Program', 'Kontak'];
+  
+  const navLinks = [
+    { name: 'Beranda', path: '#beranda' },
+    { name: 'Tentang', path: '#tentang' },
+    { name: 'Roadmap', path: '#roadmap' },
+    { name: 'Program', path: '#program' },
+    { name: 'Kontak', path: '#kontak' }
+    // { name: 'Kegiatan Kami', path: '#activities' }, 
+  ];
+
+  // Fungsi sakti untuk klik menu
+  const handleNavClick = (e, path) => {
+    setIsOpen(false); // Tutup menu di HP
+    
+    if (setCurrentPage) {
+      setCurrentPage('home'); // Ganti layar ke Landing Page
+      
+      // Beri jeda 150 milidetik agar React selesai merender halaman utama,
+      // baru kemudian browser disuruh scroll ke bagian yang dituju.
+      setTimeout(() => {
+        const element = document.querySelector(path);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else if (path === '#beranda') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 150);
+    }
+  };
 
   return (
     <nav className="fixed w-full z-50 bg-space-bg/80 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         
-        {/* 2. Ganti teks dengan Logo Gambar */}
-        <a href="#beranda" className="flex items-center">
+        {/* Tombol Logo */}
+        <a 
+          href="#beranda" 
+          className="flex items-center" 
+          onClick={(e) => handleNavClick(e, '#beranda')}
+        >
           <img 
             src={logoWhite} 
             alt="Logo Tbotics Education" 
-            className="h-10 md:h-12 w-auto object-contain" // h-10 mengatur tinggi logo agar pas
+            className="h-10 md:h-12 w-auto object-contain" 
           />
         </a>
         
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-8">
-          {links.map((link) => (
-            <a key={link} href={`#${link.toLowerCase()}`} className="text-sm text-gray-300 hover:text-space-primary transition">
-              {link}
+          {navLinks.map((item) => (
+            <a 
+              key={item.name} 
+              href={item.path} 
+              onClick={(e) => handleNavClick(e, item.path)} 
+              className="text-sm text-gray-300 hover:text-cyan-400 hover:drop-shadow-[0_0_8px_rgba(0,209,255,0.8)] transition-all duration-300"
+            >
+              {item.name}
             </a>
           ))}
         </div>
@@ -39,9 +75,14 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-space-card border-b border-white/10 p-4 flex flex-col gap-4">
-          {links.map((link) => (
-            <a key={link} href={`#${link.toLowerCase()}`} onClick={() => setIsOpen(false)} className="text-gray-300 hover:text-space-primary">
-              {link}
+          {navLinks.map((item) => (
+            <a 
+              key={item.name} 
+              href={item.path} 
+              onClick={(e) => handleNavClick(e, item.path)} 
+              className="block py-2 px-4 rounded-lg text-gray-300 hover:text-cyan-400 hover:bg-white/5 transition-all duration-300"
+            >
+              {item.name}
             </a>
           ))}
         </div>
