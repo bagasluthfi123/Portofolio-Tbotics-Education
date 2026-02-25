@@ -67,7 +67,7 @@ export default function Roadmap() {
       <div className="max-w-5xl mx-auto">
         
         {/* Header Section */}
-        <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10 md:mb-12">
+        <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="relative text-center mb-10 md:mb-12">
           <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4 md:mb-6 tracking-wide uppercase font-mono">
             Jalur Misi <span className="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]">Kurikulum</span>
           </h2>
