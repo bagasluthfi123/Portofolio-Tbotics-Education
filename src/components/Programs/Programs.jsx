@@ -1,42 +1,72 @@
-// import { motion } from 'framer-motion';
-
-// export default function Programs() {
-//   return (
-//     <section id="program" className="py-24 px-6 bg-space-card/80 relative z-10 border-y border-white/5">
-//       <div className="max-w-6xl mx-auto text-center">
-//         <h2 className="text-4xl font-bold mb-16">Program <span className="text-space-secondary">Unggulan</span></h2>
-
-//         <div className="grid md:grid-cols-2 gap-10">
-//           {/* Bootcamp Card */}
-//           <motion.div 
-//             whileHover={{ scale: 1.02 }}
-//             className="bg-gradient-to-br from-space-bg to-space-card p-10 rounded-3xl border border-space-primary/30 shadow-[0_0_30px_rgba(0,209,255,0.1)]"
-//           >
-//             <h3 className="text-3xl font-bold text-space-primary mb-4">Bootcamp</h3>
-//             <p className="text-gray-400 mb-8">Program intensif berbulan-bulan untuk mencetak juara robotik masa depan. Siswa akan dibimbing dari nol hingga siap kompetisi.</p>
-//             <button className="w-full bg-space-primary text-space-bg py-3 rounded-lg font-bold hover:bg-white transition">Daftar Bootcamp</button>
-//           </motion.div>
-
-//           {/* Workshop Card */}
-//           <motion.div 
-//             whileHover={{ scale: 1.02 }}
-//             className="bg-gradient-to-br from-space-bg to-space-card p-10 rounded-3xl border border-space-secondary/30 shadow-[0_0_30px_rgba(250,204,21,0.1)]"
-//           >
-//             <h3 className="text-3xl font-bold text-space-secondary mb-4">Workshop</h3>
-//             <p className="text-gray-400 mb-8">Pelatihan 1-2 hari dengan fokus pada pembuatan satu project nyata (misal: Robot Pembersih, Smart Lamp). Cocok untuk pemula.</p>
-//             <button className="w-full bg-space-secondary text-space-bg py-3 rounded-lg font-bold hover:bg-white transition">Ikuti Workshop</button>
-//           </motion.div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom'; 
+
+// ==========================================
+// KOMPONEN BACKGROUND: Matahari Neon & Partikel
+// ==========================================
+const NeonCosmicBackground = () => {
+  // Membuat 20 partikel acak
+  const particles = [...Array(20)].map((_, i) => ({
+    id: i,
+    size: Math.random() * 4 + 2, // Ukuran 2px - 6px
+    top: `${Math.random() * 100}%`,
+    left: `${Math.random() * 100}%`,
+    animDuration: Math.random() * 8 + 5, // Durasi terbang
+    animDelay: Math.random() * 3,
+  }));
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center">
+      {/* 1. Aura Gelap Terluar (Memberi dimensi 3D) */}
+      <motion.div
+        animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute w-[400px] md:w-[700px] h-[400px] md:h-[700px] bg-blue-900 rounded-full blur-[100px] md:blur-[150px]"
+      />
+
+      {/* 2. Inti Matahari Neon (Bersinar & Berdenyut) */}
+      <motion.div
+        animate={{ scale: [1, 1.05, 1], opacity: [0.4, 0.7, 0.4] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-cyan-500 rounded-full blur-[80px] md:blur-[100px]"
+      />
+      
+      {/* 3. Pusat Inti Paling Terang */}
+      <div className="absolute w-[100px] md:w-[150px] h-[100px] md:h-[150px] bg-white rounded-full blur-[50px] opacity-30" />
+
+      {/* 4. Partikel Bintang / Ruang Angkasa Melayang */}
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute bg-cyan-300 rounded-full shadow-[0_0_10px_rgba(34,211,238,1)]"
+          style={{
+            width: p.size,
+            height: p.size,
+            top: p.top,
+            left: p.left,
+          }}
+          animate={{
+            y: [0, -80, 0],
+            x: [0, Math.random() * 50 - 25, 0],
+            opacity: [0, 0.8, 0],
+            scale: [0.5, 1.5, 0.5],
+          }}
+          transition={{
+            duration: p.animDuration,
+            delay: p.animDelay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 
 // --- DATA PROGRAM ---
-const programsData = [
+export const programsData = [
   {
     id: 'ekstrakurikuler',
     tabLabel: 'Ekstrakurikuler',
@@ -49,6 +79,32 @@ const programsData = [
       'Alat dan komponen robotika disediakan',
       'Persiapan seleksi tim lomba sekolah'
     ],
+    target: 'SD Kelas 4 - 6 & SMP',
+    duration: '1 Semester (16 Pertemuan)',
+    syllabuses: [
+      {
+        label: "Tingkat SD",
+        items: [
+          'Bulan 1: Pengenalan Logika Pemrograman via Roblox Studio',
+          'Bulan 2: Dasar Elektronika & Merakit Rangkaian Listrik Dasar',
+          'Bulan 3: Memprogram Robot Line Follower Sederhana',
+          'Bulan 4: Sensor Ultrasonik & Obstacle Avoidance',
+          'Bulan 5: Persiapan Proyek Akhir (Mini Project)',
+          'Bulan 6: Demo Day & Pameran Karya Siswa'
+        ]
+      },
+      {
+        label: "Tingkat SMP",
+        items: [
+          'Bulan 1: Logika Pemrograman Lanjutan & C++',
+          'Bulan 2: Pengenalan Mikrokontroler Arduino',
+          'Bulan 3: Memprogram Mekanika Robot & Sensor Kompleks',
+          'Bulan 4: Pengenalan ESP32 & Dasar Internet of Things (IoT)',
+          'Bulan 5: Persiapan Proyek Sistem Smart Home',
+          'Bulan 6: Demo Day & Pameran Karya Siswa'
+        ]
+      }
+    ],
     image: 'https://picsum.photos/seed/tbotics-ekskul/800/600',
     themeColor: 'cyan'
   },
@@ -60,9 +116,22 @@ const programsData = [
     description: 'Punya waktu luang di akhir pekan? Yuk ikuti sesi pelatihan kilat kami! Cocok untuk pemula yang ingin langsung merasakan keseruan merakit robot pertama mereka dalam hitungan jam.',
     features: [
       'Selesai dalam 1 kali pertemuan (3-4 jam)',
-      'Fokus pada 1 project spesifik (misal: Robot Line Follower)',
+      'Fokus pada 1 project spesifik',
       'Hasil karya robot bisa dibawa pulang*',
       'Sertifikat keikutsertaan'
+    ],
+    target: 'Umum (Siswa SD - SMP)',
+    duration: '1 Hari (3 - 4 Jam)',
+    syllabuses: [
+      {
+        label: "Kurikulum Standar",
+        items: [
+          'Sesi 1: Pengenalan Komponen & Keamanan Alat',
+          'Sesi 2: Merakit Mekanik Robot Dasar',
+          'Sesi 3: Coding Sederhana (Block-based)',
+          'Sesi 4: Uji Coba Lintasan & Mini Kompetisi'
+        ]
+      }
     ],
     image: 'https://picsum.photos/seed/tbotics-workshop/800/600',
     themeColor: 'blue'
@@ -79,6 +148,19 @@ const programsData = [
       'Pengembangan soft-skill (Kerjasama & Presentasi)',
       'Demo Day (Presentasi project di depan orang tua)'
     ],
+    target: 'Siswa SMP / Pemula Lanjutan',
+    duration: 'Liburan Sekolah (5 Hari)',
+    syllabuses: [
+      {
+        label: "Kurikulum Standar",
+        items: [
+          'Hari 1-2: Logika Dasar & Pengenalan Python',
+          'Hari 3: Pengenalan Mikrokontroler (ESP32) & IoT Dasar',
+          'Hari 4: Merancang Sistem Smart Home Sederhana',
+          'Hari 5: Presentasi Proyek Kelompok'
+        ]
+      }
+    ],
     image: 'https://picsum.photos/seed/tbotics-bootcamp/800/600',
     themeColor: 'purple'
   },
@@ -94,29 +176,43 @@ const programsData = [
       'Fokus tinggi untuk persiapan kompetisi',
       'Laporan perkembangan belajar rutin'
     ],
+    target: 'Personal / Sesuai Permintaan',
+    duration: 'Fleksibel',
+    syllabuses: [
+      {
+        label: "Kurikulum Kustom",
+        items: [
+          'Eksplorasi topik bebas (misal: AI Klasifikasi Sampah, Game Desktop, dll)',
+          'Mentoring intensif 1-on-1 bersama pakar',
+          'Fokus pada pembuatan purwarupa (prototype)',
+          'Persiapan perlombaan atau portofolio pribadi'
+        ]
+      }
+    ],
     image: 'https://picsum.photos/seed/tbotics-privat/800/600',
     themeColor: 'amber'
   }
 ];
 
 export default function Programs() {
-  // State untuk menyimpan tab mana yang sedang aktif
   const [activeTab, setActiveTab] = useState(programsData[0].id);
-
-  // Cari data program yang sedang aktif
   const currentProgram = programsData.find(p => p.id === activeTab);
+  
+  const navigate = useNavigate();
 
-  // --- KONFIGURASI WHATSAPP ---
-  const waNumber = "6285162534164";
-  // Pesan otomatis yang akan langsung muncul di WA pengguna
-  const waMessage = `Halo Admin Tbotics, saya tertarik untuk konsultasi mengenai program ${currentProgram.title}. Boleh minta informasi lebih detailnya?`;
+  const waNumber = "6285162534164"; 
+  const waMessage = `Halo Admin Tbotics, saya tertarik untuk konsultasi mengenai program *${currentProgram.title}*. Boleh minta informasi lebih detailnya?`;
   const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
 
   return (
-    <section id="program" className="min-h-screen py-24 px-6 relative z-10 bg-[#02030A]">
-      <div className="max-w-6xl mx-auto">
+    // TAMBAHAN: overflow-hidden agar matahari/partikel tidak keluar dari batas section
+    <section id="program" className="min-h-screen py-24 px-6 relative z-10 bg-[#02030A] overflow-hidden">
+      
+      {/* RENDER BACKGROUND NEON MATAHARI DI SINI */}
+      <NeonCosmicBackground />
 
-        {/* Header Section */}
+      {/* Konten Utama (Harus z-10 agar berada di atas background) */}
+      <div className="max-w-6xl mx-auto relative z-10">
         <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-wide uppercase font-mono">
             Akademi <span className="text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]">Tbotics</span>
@@ -126,15 +222,14 @@ export default function Programs() {
           </p>
         </motion.div>
 
-        {/* Tab Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {programsData.map((program) => (
             <button
               key={program.id}
               onClick={() => setActiveTab(program.id)}
-              className={`px-6 py-3 rounded-full font-bold text-sm md:text-base transition-all duration-300 border-2 
-                ${activeTab === program.id
-                  ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.5)]'
+              className={`px-6 py-3 rounded-full font-bold text-sm md:text-base transition-all duration-300 border-2 cursor-pointer
+                ${activeTab === program.id 
+                  ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.5)]' 
                   : 'bg-[#0B0D21] border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'
                 }`}
             >
@@ -143,8 +238,8 @@ export default function Programs() {
           ))}
         </div>
 
-        {/* Content Area (Dengan animasi saat berganti tab) */}
-        <div className="bg-[#0B0D21]/80 backdrop-blur-md border-[2px] border-cyan-900/40 rounded-3xl overflow-hidden shadow-[0_0_30px_-10px_rgba(34,211,238,0.2)]">
+        {/* Backdrop dibikin sedikit lebih transparan (bg-[#0B0D21]/60) agar matahari di belakang tembus pandang */}
+        <div className="bg-[#0B0D21]/60 backdrop-blur-md border-[2px] border-cyan-900/40 rounded-3xl overflow-hidden shadow-[0_0_30px_-10px_rgba(34,211,238,0.2)]">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -154,47 +249,42 @@ export default function Programs() {
               transition={{ duration: 0.3 }}
               className="flex flex-col md:flex-row"
             >
-              {/* Image Section (Kiri) */}
-              <div className="w-full md:w-1/2 h-64 md:h-auto overflow-hidden relative group">
-                <img
-                  src={currentProgram.image}
-                  alt={currentProgram.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
+              <div className="w-full md:w-1/2 h-64 md:h-auto overflow-hidden relative group bg-[#0B0D21]">
+                <img src={currentProgram.image} alt={currentProgram.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80" />
                 <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#0B0D21] to-transparent pointer-events-none"></div>
               </div>
 
-              {/* Text Section (Kanan) */}
               <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                <p className="text-cyan-400 font-bold text-sm tracking-widest mb-2 uppercase">
-                  {currentProgram.subtitle}
-                </p>
-                <h3 className="text-3xl font-extrabold text-white mb-4">
-                  {currentProgram.title}
-                </h3>
-                <p className="text-gray-300 leading-relaxed mb-8">
-                  {currentProgram.description}
-                </p>
-
-                {/* Features List (Checkmarks pakai icon roket) */}
+                <p className="text-cyan-400 font-bold text-sm tracking-widest mb-2 uppercase">{currentProgram.subtitle}</p>
+                <h3 className="text-3xl font-extrabold text-white mb-4">{currentProgram.title}</h3>
+                <p className="text-gray-300 leading-relaxed mb-8">{currentProgram.description}</p>
+                
                 <ul className="space-y-3 mb-8">
                   {currentProgram.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3 text-gray-300">
-                      <span className="text-cyan-400 mt-1">🚀</span>
-                      <span>{feature}</span>
+                      <span className="text-cyan-400 mt-1">🚀</span><span>{feature}</span>
                     </li>
                   ))}
                 </ul>
 
-                <button onClick={() => window.open(waLink, '_blank')}
-                className="self-start bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-cyan-500/50">
-                  Konsultasi Program
-                </button>
+                <div className="flex flex-wrap gap-4 mt-auto">
+                  <button 
+                    onClick={() => navigate(`/program/${currentProgram.id}`)}
+                    className="border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900 px-6 py-3 rounded-xl font-bold transition-all cursor-pointer shadow-[0_0_10px_rgba(0,209,255,0.2)] bg-[#0B0D21]/50 backdrop-blur-sm"
+                  >
+                    Lihat Detail
+                  </button>
+                  <button 
+                    onClick={() => window.open(waLink, '_blank')}
+                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-6 py-3 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(0,216,255,0.3)] hover:shadow-[0_0_25px_rgba(0,216,255,0.5)] cursor-pointer"
+                  >
+                    Konsultasi WA
+                  </button>
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>
         </div>
-
       </div>
     </section>
   );
