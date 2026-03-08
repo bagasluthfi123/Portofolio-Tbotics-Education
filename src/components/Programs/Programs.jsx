@@ -5,7 +5,7 @@
 //     <section id="program" className="py-24 px-6 bg-space-card/80 relative z-10 border-y border-white/5">
 //       <div className="max-w-6xl mx-auto text-center">
 //         <h2 className="text-4xl font-bold mb-16">Program <span className="text-space-secondary">Unggulan</span></h2>
-        
+
 //         <div className="grid md:grid-cols-2 gap-10">
 //           {/* Bootcamp Card */}
 //           <motion.div 
@@ -106,10 +106,16 @@ export default function Programs() {
   // Cari data program yang sedang aktif
   const currentProgram = programsData.find(p => p.id === activeTab);
 
+  // --- KONFIGURASI WHATSAPP ---
+  const waNumber = "6285162534164";
+  // Pesan otomatis yang akan langsung muncul di WA pengguna
+  const waMessage = `Halo Admin Tbotics, saya tertarik untuk konsultasi mengenai program ${currentProgram.title}. Boleh minta informasi lebih detailnya?`;
+  const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+
   return (
     <section id="program" className="min-h-screen py-24 px-6 relative z-10 bg-[#02030A]">
       <div className="max-w-6xl mx-auto">
-        
+
         {/* Header Section */}
         <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-wide uppercase font-mono">
@@ -127,8 +133,8 @@ export default function Programs() {
               key={program.id}
               onClick={() => setActiveTab(program.id)}
               className={`px-6 py-3 rounded-full font-bold text-sm md:text-base transition-all duration-300 border-2 
-                ${activeTab === program.id 
-                  ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.5)]' 
+                ${activeTab === program.id
+                  ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.5)]'
                   : 'bg-[#0B0D21] border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'
                 }`}
             >
@@ -150,9 +156,9 @@ export default function Programs() {
             >
               {/* Image Section (Kiri) */}
               <div className="w-full md:w-1/2 h-64 md:h-auto overflow-hidden relative group">
-                <img 
-                  src={currentProgram.image} 
-                  alt={currentProgram.title} 
+                <img
+                  src={currentProgram.image}
+                  alt={currentProgram.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#0B0D21] to-transparent pointer-events-none"></div>
@@ -169,7 +175,7 @@ export default function Programs() {
                 <p className="text-gray-300 leading-relaxed mb-8">
                   {currentProgram.description}
                 </p>
-                
+
                 {/* Features List (Checkmarks pakai icon roket) */}
                 <ul className="space-y-3 mb-8">
                   {currentProgram.features.map((feature, index) => (
@@ -180,7 +186,8 @@ export default function Programs() {
                   ))}
                 </ul>
 
-                <button className="self-start bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-cyan-500/50">
+                <button onClick={() => window.open(waLink, '_blank')}
+                className="self-start bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-cyan-500/50">
                   Konsultasi Program
                 </button>
               </div>

@@ -9,8 +9,8 @@ export default function Navbar({ setCurrentPage }) {
   const navLinks = [
     { name: 'Beranda', path: '#beranda' },
     { name: 'Tentang', path: '#tentang' },
-    { name: 'Roadmap', path: '#roadmap' },
     { name: 'Program', path: '#program' },
+    { name: 'Roadmap', path: '#roadmap' },
     { name: 'Kontak', path: '#kontak' }
     // { name: 'Kegiatan Kami', path: '#activities' }, 
   ];
