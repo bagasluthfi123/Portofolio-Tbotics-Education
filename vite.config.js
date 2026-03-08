@@ -23,12 +23,12 @@ export default defineConfig({
         icons: [
           // Opsional: Siapkan icon logo Tbotics berukuran 192x192px dan 512x512px di dalam folder "public"
           {
-            src: '/public/Logo Bulet.jpeg',
+            src: 'Logo Bulet.jpeg',
             sizes: '192x192',
             type: 'image/jpeg'
           },
           {
-            src: '/public/Logo Bulet.jpeg',
+            src: 'Logo Bulet.jpeg',
             sizes: '512x512',
             type: 'image/jpeg'
           }
