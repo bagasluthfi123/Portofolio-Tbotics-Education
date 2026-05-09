@@ -65,7 +65,7 @@ export default function Roadmap() {
   return (
     <section id="roadmap" className="min-h-screen py-16 md:py-24 px-4 md:px-6 relative z-10 bg-[#020b2d] overflow-hidden">
       <div className="max-w-5xl mx-auto">
-        
+
         {/* Header Section */}
         <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="relative text-center mb-10 md:mb-12">
           <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4 md:mb-6 tracking-wide uppercase font-mono">
@@ -83,8 +83,8 @@ export default function Roadmap() {
               key={category}
               onClick={() => setActiveCategory(category)}
               className={`px-6 py-2.5 md:px-10 md:py-3 rounded-full font-bold text-sm md:text-lg transition-all duration-300 border-2 
-                ${activeCategory === category 
-                  ? 'bg-[#00D8FF]/10 border-[#00D8FF] text-[#00D8FF] shadow-[0_0_15px_rgba(0,216,255,0.4)] scale-105' 
+                ${activeCategory === category
+                  ? 'bg-[#00D8FF]/10 border-[#00D8FF] text-[#00D8FF] shadow-[0_0_15px_rgba(0,216,255,0.4)] scale-105'
                   : 'bg-[#09112A] border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200'
                 }`}
             >
@@ -102,7 +102,7 @@ export default function Roadmap() {
             <AnimatePresence mode="popLayout">
               {filteredRoadmap.map((item, index) => {
                 return (
-                  <motion.div 
+                  <motion.div
                     key={item.id}
                     layout
                     initial={{ opacity: 0, scale: 0.9, y: 30 }}
@@ -111,11 +111,11 @@ export default function Roadmap() {
                     transition={{ duration: 0.4 }} // Dibuat lebih cepat dan ringan
                     className={`relative flex flex-col md:flex-row items-start md:items-center w-full ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}
                   >
-                    
+
                     {/* Node Tengah (Dibuat statis dengan CSS hover saja, tanpa Framer Motion continuous loop) */}
-                    <div 
+                    <div
                       className="absolute left-6 md:left-1/2 w-10 h-10 bg-[#0B0D21] border-4 rounded-full transform -translate-x-1/2 flex items-center justify-center z-20 mt-2 md:mt-0 transition-shadow duration-300"
-                      style={{ 
+                      style={{
                         borderColor: item.color,
                         boxShadow: `0px 0px 10px ${item.color}80` // Glow statis yang ringan
                       }}
@@ -125,29 +125,29 @@ export default function Roadmap() {
 
                     {/* Konten Kartu */}
                     <div className={`w-full md:w-1/2 pl-16 md:pl-0 ${index % 2 === 0 ? 'md:pl-12 lg:pl-16' : 'md:pr-12 lg:pr-16'}`}>
-                      
+
                       {/* OPTIMASI: 
                         Alih-alih animasi terus-menerus, kita pakai efek transisi CSS standar untuk hover. 
                         Ini jauh lebih hemat memori dan tidak bikin HP/Laptop panas.
                       */}
-                      <div 
-                        style={{ border: `2px solid ${item.color}50` }} 
+                      <div
+                        style={{ border: `2px solid ${item.color}50` }}
                         className="bg-[#09112A] p-5 md:p-6 rounded-2xl md:rounded-3xl hover:scale-[1.02] transition-all duration-300 group"
                         onMouseEnter={(e) => e.currentTarget.style.boxShadow = `0px 0px 25px ${item.color}60`}
                         onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                       >
-                        
+
                         {/* Badge Kelas */}
-                        <span 
+                        <span
                           className="inline-block px-3 py-1 md:px-4 md:py-1.5 rounded-full border text-[10px] md:text-xs font-bold mb-3 md:mb-4 tracking-wider uppercase"
                           style={{ borderColor: item.color, color: item.color, backgroundColor: `${item.color}15` }}
                         >
                           {item.level}
                         </span>
-                        
-                        <h3 
+
+                        <h3
                           className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-3 transition-colors duration-300"
-                          style={{ '--hover-color': item.color }} 
+                          style={{ '--hover-color': item.color }}
                         >
                           <span className="group-hover:text-[var(--hover-color)] transition-colors">{item.title}</span>
                         </h3>

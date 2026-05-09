@@ -12,6 +12,9 @@ import Contact from './components/Contact/Contact';
 import Loading from './components/Loading/Loading';
 import ProgramDetail from './components/Programs/ProgramDetail';
 
+// 👇 1. TAMBAHKAN IMPORT CHATBOT DI SINI 👇
+import Chatbot from './components/Chatbot/Chatbot';
+
 // Import Logo untuk Preloading
 import logoWhite from './assets/Logo Tbotics White.png';
 
@@ -78,6 +81,10 @@ function App() {
         <footer className="py-6 text-center text-gray-400 border-t border-white/5 relative z-10 bg-[#02030A]">
           <p>&copy; {new Date().getFullYear()} Tbotics Education. Memberdayakan Generasi Inovator.</p>
         </footer>
+
+        {/* 👇 2. TAMBAHKAN KOMPONEN CHATBOT TEPAT DI BAWAH FOOTER 👇 */}
+        <Chatbot />
+
       </div>
     </ReactLenis>
   );
