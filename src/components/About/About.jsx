@@ -245,15 +245,10 @@
 //   );
 // }
 
-import {
-  motion,
-  useScroll,
-  useTransform
-} from "framer-motion";
-import { useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 // ==========================================
-// Komponen Counter Statik (Tanpa Animasi Berjalan)
+// Komponen Counter Statik
 // ==========================================
 function Counter({ to }) {
   return (
@@ -264,83 +259,87 @@ function Counter({ to }) {
 }
 
 // ==========================================
-// Komponen Floating Symbol untuk Background
+// Komponen Floating Symbol
 // ==========================================
-function FloatingSymbol({ scrollYProgress, symbol, top, left, yRange, size, rotate, opacity }) {
-  const yParallax = useTransform(scrollYProgress, [0, 1], yRange);
-
+function FloatingSymbol({ symbol, top, left, size, rotate, opacity }) {
   return (
-    <motion.div
-      style={{ y: yParallax, top, left }}
+    <div
+      style={{ top, left, transform: `rotate(${rotate}deg)`, opacity }}
       className="absolute z-0 font-mono text-cyan-500 pointer-events-none select-none"
-      animate={{
-        rotate: [rotate, rotate + 15, rotate],
-        opacity: [opacity, opacity * 1.5, opacity],
-        scale: [1, 1.1, 1]
-      }}
-      transition={{ duration: 4 + Math.random() * 3, repeat: Infinity, ease: "easeInOut" }}
     >
       <span style={{ fontSize: size }} className="drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">
         {symbol}
       </span>
-    </motion.div>
+    </div>
   );
 }
 
 // ==========================================
-// Main Component: About
+// Main Component: About (NERFED - SUPER RINGAN)
 // ==========================================
 export default function About() {
-  const ref = useRef(null);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // 👇 1. KITA GUNAKAN STATE UNTUK LINK VIDEO 👇
+  // Jika pertama buka sudah online, langsung isi linknya. Jika offline, kosongkan.
+  const [videoSrc, setVideoSrc] = useState(
+    navigator.onLine ? "https://www.youtube.com/embed/sCJ82fQ_S7A" : ""
+  );
 
-  // Mengambil progress scroll untuk efek parallax utama
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
+  useEffect(() => {
+    let timer;
 
-  // ===== EFEK PARALLAX KUSTOM =====
-  const yBgGlow = useTransform(scrollYProgress, [0, 1], [-80, 80]);
-  const yText = useTransform(scrollYProgress, [0, 1], [0, -40]);
-  const yVideo = useTransform(scrollYProgress, [0, 1], [0, -80]);
+    const handleOnline = () => {
+      setIsOnline(true);
+      setIsLoading(true);
+      // Cabut link sementara untuk mereset error browser
+      setVideoSrc(""); 
+      
+      // Tunggu 4 detik sampai DNS komputer benar-benar jalan, baru masukkan linknya
+      timer = setTimeout(() => {
+        setVideoSrc("https://www.youtube.com/embed/sCJ82fQ_S7A");
+      }, 4000);
+    };
+    
+    const handleOffline = () => {
+      setIsOnline(false);
+      setVideoSrc(""); // Kosongkan link saat offline
+      clearTimeout(timer);
+    };
 
-  // Data simbol-simbol dikurangi agar lebih ringan (hanya 2 partikel)
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      clearTimeout(timer);
+    };
+  }, []);
+
   const symbolsData = [
-    { symbol: "</>", top: "15%", left: "5%", yRange: [0, -200], size: "4rem", rotate: -10, opacity: 0.15 },
-    { symbol: "{ }", top: "60%", left: "85%", yRange: [0, -300], size: "5rem", rotate: 15, opacity: 0.1 }
+    { symbol: "</>", top: "15%", left: "5%", size: "4rem", rotate: -10, opacity: 0.15 },
+    { symbol: "{ }", top: "60%", left: "85%", size: "5rem", rotate: 15, opacity: 0.1 }
   ];
 
   return (
     <section
       id="tentang"
-      ref={ref}
       className="relative bg-[#020b2d] text-white py-32 px-6 overflow-hidden"
     >
-      {/* Background Grid */}
+      {/* Background Grid & Light */}
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.08)_1px,transparent_1px)] [background-size:40px_40px]" />
+      <div className="absolute top-0 left-1/4 w-1/2 h-full bg-gradient-to-b from-blue-500/10 via-transparent to-transparent blur-3xl -z-10" />
+      <div className="absolute -top-20 -left-20 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] -z-10" />
 
-      {/* Light Beam */}
-      <motion.div
-        animate={{ x: ["-30%", "130%"] }}
-        transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-        className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-blue-500/5 to-transparent blur-3xl -z-10"
-      />
-
-      {/* Parallax Glow Cyan */}
-      <motion.div
-        style={{ y: yBgGlow }}
-        className="absolute -top-20 -left-20 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] -z-10"
-      />
-
-      {/* RENDER SIMBOL-SIMBOL MELAYANG */}
+      {/* RENDER SIMBOL-SIMBOL */}
       {symbolsData.map((data, index) => (
         <FloatingSymbol
           key={index}
-          scrollYProgress={scrollYProgress}
           symbol={data.symbol}
           top={data.top}
           left={data.left}
-          yRange={data.yRange}
           size={data.size}
           rotate={data.rotate}
           opacity={data.opacity}
@@ -353,81 +352,77 @@ export default function About() {
         <div className="text-center space-y-12 relative">
           
           <div className="space-y-8">
-            <motion.h2
-              style={{ y: yText }}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight relative z-10"
-            >
+            <h2 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight relative z-10">
               Jaringan Global Robotik
               <span className="text-cyan-400 block mt-4 drop-shadow-[0_0_20px_rgba(34,211,238,0.6)]">
                 Tbotics Education
               </span>
-            </motion.h2>
+            </h2>
 
-            <motion.p
-              style={{ y: yText }}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="text-blue-100/70 text-lg max-w-3xl mx-auto leading-relaxed font-medium relative z-10"
-            >
+            <p className="text-blue-100/70 text-lg max-w-3xl mx-auto leading-relaxed font-medium relative z-10">
               Jaringan Global Robotik (Tbotics Education) merupakan jaringan edukasi robotika yang menerapkan konsep
               <span className="text-cyan-300 italic font-bold ml-1"> Learn & Play </span> melalui pendekatan
               Creative Building, Electrical Connectivity, dan Advanced Programming.
               Program dirancang untuk membangun fondasi keterampilan robotika secara terstruktur, aplikatif, dan berkelanjutan.
-            </motion.p>
+            </p>
           </div>
 
-          {/* ===== VIDEO DENGAN NEON BORDER ===== */}
-          <motion.div
-            style={{ y: yVideo }}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative w-full max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden border-2 border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.15)] group z-10 bg-[#0B0D21]"
-          >
-            <iframe
-              className="absolute top-0 left-0 w-full h-full transform group-hover:scale-105 transition-transform duration-700"
-              src="https://www.youtube.com/embed/sCJ82fQ_S7A"
-              title="Tbotics Video Profile"
-              frameBorder="0"
-              allowFullScreen
-            ></iframe>
-          </motion.div>
+          {/* ===== VIDEO DENGAN LOGIKA LOADING ===== */}
+          <div className="relative w-full max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden border-2 border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.15)] group z-10 bg-[#0B0D21] flex items-center justify-center">
+            
+            {isOnline ? (
+              <>
+                {/* ANIMASI SPINNER LOADING */}
+                {isLoading && (
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0B0D21]">
+                    <div className="w-12 h-12 border-4 border-cyan-900 border-t-cyan-400 rounded-full animate-spin shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
+                    <p className="text-cyan-400 mt-4 animate-pulse font-mono text-sm tracking-widest">MEMUAT VIDEO...</p>
+                  </div>
+                )}
+                
+                {/* 👇 2. HANYA RENDER IFRAME JIKA VIDEOSRC TIDAK KOSONG 👇 */}
+                {videoSrc && (
+                  <iframe
+                    onLoad={() => setIsLoading(false)} 
+                    className={`absolute top-0 left-0 w-full h-full transform group-hover:scale-105 transition-all duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                    src={videoSrc}
+                    title="Tbotics Video Profile"
+                    frameBorder="0"
+                    allowFullScreen
+                  ></iframe>
+                )}
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center text-center p-6 w-full h-full bg-[#0B0D21]">
+                <span className="text-5xl block mb-4 opacity-80">📶🚫</span>
+                <h3 className="text-2xl font-bold text-gray-300">Anda sedang Offline</h3>
+                <p className="text-gray-500 text-base mt-2">
+                  Hubungkan perangkat ke internet untuk memutar video profil Tbotics.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* ===== DATA SECTION (STATISTIK) ===== */}
         <div className="grid md:grid-cols-3 gap-12 text-center bg-[#0B0D21]/40 py-12 rounded-3xl border border-blue-900/30 backdrop-blur-sm relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <div>
             <Counter to={1000} />
             <p className="text-blue-200/50 font-bold mt-4 tracking-widest uppercase text-sm">Peserta Terlatih</p>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+          </div>
+          <div>
             <Counter to={50} />
             <p className="text-blue-200/50 font-bold mt-4 tracking-widest uppercase text-sm">Program Dilaksanakan</p>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
+          </div>
+          <div>
             <Counter to={20} />
             <p className="text-blue-200/50 font-bold mt-4 tracking-widest uppercase text-sm">Institusi Bermitra</p>
-          </motion.div>
+          </div>
         </div>
 
         {/* ===== VISI & MISI ===== */}
         <div className="grid md:grid-cols-2 gap-8 relative z-10">
-          {/* Kartu Visi */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-[#0B0D21]/80 backdrop-blur-md border border-cyan-900/40 p-10 rounded-3xl shadow-[0_0_30px_-10px_rgba(34,211,238,0.2)]"
-          >
+          <div className="bg-[#0B0D21]/80 backdrop-blur-md border border-cyan-900/40 p-10 rounded-3xl shadow-[0_0_30px_-10px_rgba(34,211,238,0.2)]">
             <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center text-2xl mb-6 border border-cyan-400/50">
               🔭
             </div>
@@ -435,16 +430,9 @@ export default function About() {
             <p className="text-gray-300 leading-relaxed text-lg">
               Menjadi ekosistem edukasi terdepan yang menyediakan ruang berbagi pengetahuan secara bebas dan terbuka, di mana setiap anak memiliki kesempatan yang sama untuk merancang, merakit, dan memprogram masa depannya melalui teknologi.
             </p>
-          </motion.div>
+          </div>
 
-          {/* Kartu Misi */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="bg-[#0B0D21]/80 backdrop-blur-md border border-purple-900/40 p-10 rounded-3xl shadow-[0_0_30px_-10px_rgba(168,85,247,0.2)]"
-          >
+          <div className="bg-[#0B0D21]/80 backdrop-blur-md border border-purple-900/40 p-10 rounded-3xl shadow-[0_0_30px_-10px_rgba(168,85,247,0.2)]">
             <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-2xl mb-6 border border-purple-400/50">
               🚀
             </div>
@@ -463,7 +451,7 @@ export default function About() {
                 Membangun komunitas inovator muda yang saling berkolaborasi dan berbagi wawasan teknologi.
               </li>
             </ul>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export default function Contact() {
@@ -8,6 +8,33 @@ export default function Contact() {
     message: ''
   });
 
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  
+  // State untuk animasi loading dan refresh key Maps
+  const [isMapLoading, setIsMapLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      // Saat online, munculkan loading dan siapkan refresh
+      setIsMapLoading(true);
+      setTimeout(() => {
+        setRefreshKey((prev) => prev + 1);
+      }, 1500);
+    };
+    
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -16,7 +43,6 @@ export default function Contact() {
     e.preventDefault();
     const phoneNumber = "6285162534164";
 
-    // 1. Susun pesan dengan rapi menggunakan enter asli (template literal)
     const messageTemplate = `Halo Tim Tbotics, 
 Saya mengunjungi website Tbotics dan ingin berdiskusi lebih lanjut. 
 Berikut adalah data diri saya:
@@ -28,10 +54,7 @@ Berikut adalah data diri saya:
 
 Terima kasih.`;
 
-    // 2. Encode seluruh pesan agar aman dan terbaca sempurna oleh WhatsApp
     const encodedMessage = encodeURIComponent(messageTemplate);
-
-    // 3. Buka link WhatsApp
     window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank");
   };
 
@@ -61,7 +84,7 @@ Terima kasih.`;
             </p>
           </div>
 
-          {/* Grid Kartu Info Kontak - Sekarang hanya 2 kartu (Alamat & Email) */}
+          {/* Grid Kartu Info Kontak */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
             {/* Kartu Alamat */}
@@ -90,18 +113,40 @@ Terima kasih.`;
             </a>
           </div>
 
-          {/* GOOGLE MAPS EMBED */}
-          <div className="w-full h-64 sm:h-72 rounded-[20px] overflow-hidden border border-blue-900/40 shadow-lg relative group">
+          {/* LOGIKA RENDER IFRAME MAPS DENGAN LOADING ANIMATION */}
+          <div className="w-full h-64 sm:h-72 rounded-[20px] overflow-hidden border border-blue-900/40 shadow-lg relative group bg-[#09112A] flex items-center justify-center">
             <div className="absolute inset-0 pointer-events-none border border-cyan-500/0 rounded-[20px] z-10 group-hover:border-cyan-500/50 transition-colors duration-300"></div>
-            <iframe
-              title="Peta Lokasi Tbotics"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.0012970823777!2d106.80605997591441!3d-6.263557793725052!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1e348f926eb%3A0xb6128b79a49355c!2sAntasari%20Park!5e0!3m2!1sid!2sid!4v1771766774013!5m2!1sid!2sid"
-              className="w-full h-full"
-              style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) contrast(100%)" }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
+
+            {isOnline ? (
+              <>
+                {/* Animasi Loading Maps */}
+                {isMapLoading && (
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#09112A]">
+                    <div className="w-12 h-12 border-4 border-cyan-900 border-t-cyan-400 rounded-full animate-spin shadow-[0_0_15px_rgba(34,211,238,0.5)]"></div>
+                    <p className="text-cyan-400 mt-4 animate-pulse font-mono text-sm tracking-widest">MEMUAT PETA...</p>
+                  </div>
+                )}
+
+                <iframe
+                  key={refreshKey}
+                  onLoad={() => setIsMapLoading(false)} 
+                  title="Peta Lokasi Tbotics"
+                  /* 👇 INI LINK YANG SUDAH DIPERBAIKI (Valid Google Maps Embed) 👇 */
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.001297082387!2d106.80605997591437!3d-6.263557793725052!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1e348f926eb%3A0xb6128b79a49355c!2sAntasari%20Park!5e0!3m2!1sid!2sid!4v1778411727473!5m2!1sid!2sid" 
+                  className={`absolute top-0 left-0 w-full h-full transition-all duration-700 ${isMapLoading ? 'opacity-0' : 'opacity-100'}`}
+                  style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) contrast(100%)" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </>
+            ) : (
+              // Tampilan Pengganti Dinosaurus Saat Offline
+              <div className="flex flex-col items-center justify-center text-center p-6 w-full h-full bg-[#09112A]">
+                <span className="text-4xl block mb-3 opacity-80">🗺️🚫</span>
+                <p className="text-gray-400 text-sm">Peta interaktif tidak tersedia dalam mode offline.</p>
+              </div>
+            )}
           </div>
 
         </motion.div>

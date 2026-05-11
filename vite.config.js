@@ -11,7 +11,7 @@ export default defineConfig({
       registerType: 'autoUpdate', // Otomatis mengupdate cache kalau ada versi website baru
       workbox: {
         // Daftar tipe file yang akan disimpan di memori HP/Laptop pengunjung (Cache)
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,mp4,webm,woff,woff2,ttf}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,mp4,webm,woff,woff2,ttf, glb, gltf}']
       },
       manifest: {
         name: 'Tbotics Education',
