@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/Portofolio-Tbotics-Education/sw.js', { scope: '/Portofolio-Tbotics-Education/' })})}
