@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy, useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, animate } from 'framer-motion';
 
 // ==========================================
 // LAZY IMPORT ROBOT 3D
@@ -176,10 +176,9 @@ const whyData = [
 function WhyChooseUsSection() {
   const sectionRef = useRef(null);
 
-  // 👇 PERUBAHAN: Menyesuaikan offset agar animasi berjalan lebih seimbang dan posisinya lebih terpusat 👇
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start 70%", "end center"],
+    offset: ["start end", "end start"],
   });
 
   const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 22, mass: 0.6 });
@@ -195,28 +194,8 @@ function WhyChooseUsSection() {
   const subtitleX    = useTransform(smooth, [0.1, 0.4], [-80, 0]);
   const lineScale    = useTransform(smooth, [0.15, 0.45], [0, 1]);
 
-  const cardDirections = [
-    { x: useTransform(smooth, [0.1, 0.5], [-120, 0]), y: useTransform(smooth, [0.1, 0.5], [-60, 0]) },
-    { x: useTransform(smooth, [0.15, 0.55], [120, 0]), y: useTransform(smooth, [0.15, 0.55], [-60, 0]) },
-    { x: useTransform(smooth, [0.2, 0.6], [-120, 0]), y: useTransform(smooth, [0.2, 0.6], [60, 0]) },
-    { x: useTransform(smooth, [0.25, 0.65], [120, 0]), y: useTransform(smooth, [0.25, 0.65], [60, 0]) },
-  ];
-  const cardOpacities = [
-    useTransform(smooth, [0.1, 0.45], [0, 1]),
-    useTransform(smooth, [0.15, 0.5], [0, 1]),
-    useTransform(smooth, [0.2, 0.55], [0, 1]),
-    useTransform(smooth, [0.25, 0.6], [0, 1]),
-  ];
-  const cardFloatY = [
-    useTransform(smooth, [0.4, 1], [0, -50]),
-    useTransform(smooth, [0.4, 1], [0, -25]),
-    useTransform(smooth, [0.4, 1], [0,  25]),
-    useTransform(smooth, [0.4, 1], [0,  50]),
-  ];
-
   return (
-    // 👇 PERUBAHAN: Menyesuaikan padding (py-16 md:py-24) agar section tidak terlalu jauh ke bawah saat layar standar 👇
-    <section ref={sectionRef} id="mengapa-kami" className="relative py-16 md:py-24 lg:py-32 px-6 z-10 overflow-hidden flex flex-col justify-center min-h-screen">
+    <section ref={sectionRef} id="mengapa-kami" className="relative py-20 lg:py-32 px-6 z-10 overflow-hidden">
       <motion.div style={{ y: orbY1, x: orbX1 }} className="absolute top-10 left-[-80px] w-[300px] lg:w-[500px] h-[300px] lg:h-[500px] rounded-full pointer-events-none will-change-transform" aria-hidden>
         <div className="w-full h-full rounded-full bg-cyan-500/10 blur-[80px] lg:blur-[120px]" />
       </motion.div>
@@ -227,12 +206,12 @@ function WhyChooseUsSection() {
         <div className="w-full h-full rounded-full bg-purple-600/6 blur-[100px] lg:blur-[140px]" />
       </motion.div>
 
-      <div className="max-w-6xl mx-auto relative z-10 w-full">
-        <motion.div style={{ scale: headerScale, opacity: headerOpacity, y: headerY }} className="text-center mb-12 lg:mb-24 will-change-transform origin-center">
+      <div className="max-w-6xl mx-auto relative z-10">
+        <motion.div style={{ scale: headerScale, opacity: headerOpacity, y: headerY }} className="text-center mb-16 lg:mb-24 will-change-transform origin-center">
           <motion.p style={{ x: subtitleX }} className="text-cyan-400 font-mono tracking-[0.3em] uppercase text-xs lg:text-sm mb-4 will-change-transform">
             Keunggulan Kami
           </motion.p>
-          <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+          <h2 className="text-3xl lg:text-6xl font-extrabold leading-tight tracking-tight">
             Kenapa Harus Pilih
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 block mt-2 lg:mt-3 drop-shadow-[0_0_20px_rgba(34,211,238,0.4)] lg:drop-shadow-[0_0_30px_rgba(34,211,238,0.6)]">
               Tbotics?
@@ -250,7 +229,7 @@ function WhyChooseUsSection() {
               key={index} 
               initial={{ opacity: 0, y: 50, x: index % 2 === 0 ? -50 : 50 }}
               whileInView={{ opacity: 1, y: 0, x: 0 }}
-              viewport={{ once: true, amount: 0.2 }} 
+              viewport={{ once: true, amount: 0.3 }} 
               transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
               className="h-full"
             >
@@ -427,19 +406,6 @@ function AboutSection() {
 // ==========================================
 export default function Home() {
   const heroRef = useRef(null);
-  
-  // State untuk mendeteksi apakah layar kecil (mobile/tablet portrait)
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      // Jika lebar layar di bawah 1024px, berarti layar kecil
-      setIsSmallScreen(window.innerWidth < 1024);
-    };
-    handleResize(); // Cek saat pertama kali render
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -453,31 +419,13 @@ export default function Home() {
     restDelta: 0.001
   });
 
-  // 👇 PERUBAHAN UTAMA 1: Mengatur animasi menghilang berdasarkan ukuran layar 👇
-  // Jika layar kecil (HP/Tablet), robot TIDAK AKAN MENGHILANG (selalu 1)
-  // Jika layar besar (PC), animasi menghilangnya dicepatin di rentang scroll [0, 0.4]
-  const dynamicRobotOpacity = useTransform(smoothProgress, [0, 0.4], [1, isSmallScreen ? 1 : 0]);
-  
+  const robotOpacity = useTransform(smoothProgress, [0, 0.75], [1, 0]);
   const robotY       = useTransform(smoothProgress, [0, 0.75], [0, 80]);
   const robotScale   = useTransform(smoothProgress, [0, 0.75], [0.8, 0.68]);
   const robotRotate  = useTransform(smoothProgress, [0, 0.75], [0, 12]);
 
-  // Efek parallax teks hero juga dicepatin agar selaras (hilang saat di-scroll sedikit)
-  const textOpacity  = useTransform(smoothProgress, [0, 0.3], [1, 0]);
-  const textY        = useTransform(smoothProgress, [0, 0.5], [0, -60]);
-
-  // 👇 PERUBAHAN UTAMA 2: Mematikan interaksi kursor/touch saat robot sudah menghilang 👇
-  const [isPointerEventsEnabled, setIsPointerEventsEnabled] = useState(true);
-
-  // Memantau perubahan nilai opacity robot. Kalau < 0.9, matikan interaksi (ga bisa diklik/diputar)
-  useEffect(() => {
-    const unsubscribe = dynamicRobotOpacity.onChange((v) => {
-      if (v < 0.9) setIsPointerEventsEnabled(false);
-      else setIsPointerEventsEnabled(true);
-    });
-    return unsubscribe;
-  }, [dynamicRobotOpacity]);
-
+  const textOpacity  = useTransform(smoothProgress, [0, 0.6], [1, 0]);
+  const textY        = useTransform(smoothProgress, [0, 0.6], [0, -60]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -506,12 +454,11 @@ export default function Home() {
       <SpaceDustParallax />
 
       {/* ── HERO SECTION ── */}
-      {/* Menggunakan lg:min-h-[180vh] agar space paralaks scroll hanya ada di layar PC */}
       <section ref={heroRef} className="relative z-10 min-h-[100vh] lg:h-[180vh] flex lg:block items-center">
-        
-        <div className="lg:sticky lg:top-0 min-h-[100vh] lg:h-screen w-full flex flex-col lg:flex-row items-center justify-start lg:justify-center pt-24 pb-12 lg:pt-28 lg:pb-0 px-5 lg:px-8 overflow-hidden">
+        {/* 👇 PERUBAHAN: Kelas khusus tablet landscape `tall:max-lg:flex-row` dan tinggi 100vh diganti min-h-screen di mobile 👇 */}
+        <div className="lg:sticky lg:top-0 min-h-screen lg:h-screen w-full flex flex-col lg:flex-row items-center justify-center pt-24 pb-12 lg:pt-28 lg:pb-0 px-5 lg:px-8 overflow-hidden">
           
-          <div className="max-w-7xl w-full flex flex-col lg:flex-row gap-8 lg:gap-10 items-center justify-between h-auto mt-2 lg:mt-0">
+          <div className="max-w-7xl w-full flex flex-col lg:flex-row gap-8 lg:gap-10 items-center justify-between h-auto">
 
             {/* Teks */}
             <motion.div
@@ -557,9 +504,10 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.75 }}
               animate={{ opacity: 1, scale: 0.8 }}
               transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              style={{ opacity: dynamicRobotOpacity, y: robotY, scale: robotScale, rotate: robotRotate }}
-              className={`z-10 will-change-transform w-full flex justify-center lg:justify-end lg:w-1/2 relative ${!isPointerEventsEnabled ? 'pointer-events-none' : ''}`}
+              style={{ opacity: robotOpacity, y: robotY, scale: robotScale, rotate: robotRotate }}
+              className="z-10 will-change-transform w-full flex justify-center lg:justify-end lg:w-1/2 relative"
             >
+              {/* 👇 PERUBAHAN: Memperkecil tinggi di iPad Landscape agar tidak tumpang tindih 👇 */}
               <div className="w-[110vw] h-[320px] sm:h-[400px] relative left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:left-auto lg:w-[600px] lg:h-[500px] xl:w-[700px] xl:h-[600px] flex justify-center items-center">
                 <Suspense fallback={
                   <div className="h-full flex items-center justify-center text-cyan-400 animate-pulse font-mono text-xs sm:text-base">
