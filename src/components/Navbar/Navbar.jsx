@@ -11,7 +11,7 @@ export default function Navbar() {
   
   const navLinks = [
     { name: 'Beranda', path: '#beranda' },
-    { name: 'Tentang', path: '#tentang' },
+    // { name: 'Tentang', path: '#tentang' },
     { name: 'Program', path: '#program' },
     { name: 'Kontak', path: '#kontak' }
   ];

@@ -6,7 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar/Navbar';
 import SpaceBackground from './components/Background/SpaceBackground';
 import Home from './components/Home/Home';
-import About from './components/About/About';
+// import About from './components/About/About';
 import Programs, { programsData } from './components/Programs/Programs';
 import Contact from './components/Contact/Contact';
 import Loading from './components/Loading/Loading';
@@ -21,7 +21,7 @@ import logoWhite from './assets/Logo Tbotics White.png';
 const LandingPage = () => (
   <main>
     <Home />
-    <About />
+    {/* <About /> */}
     <Programs />
     <Contact />
   </main>
