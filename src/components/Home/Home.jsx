@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy, useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring, animate } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 // ==========================================
 // LAZY IMPORT ROBOT 3D
@@ -86,7 +86,7 @@ const SpaceDustParallax = () => {
 // ==========================================
 function Counter({ to }) {
   return (
-    <div className="text-4xl md:text-5xl font-bold text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.4)]">
+    <div className="text-4xl lg:text-5xl font-bold text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.4)]">
       {to}+
     </div>
   );
@@ -100,7 +100,7 @@ function FloatingSymbol({ symbol, top, left, size, rotate, opacity }) {
       transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
       viewport={{ once: true, amount: 0.1 }}
       style={{ top, left, transform: `rotate(${rotate}deg)` }}
-      className="absolute z-0 font-mono text-cyan-500 pointer-events-none select-none"
+      className="absolute z-0 font-mono text-cyan-500 pointer-events-none select-none hidden lg:block"
     >
       <span style={{ fontSize: size }} className="drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">
         {symbol}
@@ -109,9 +109,6 @@ function FloatingSymbol({ symbol, top, left, size, rotate, opacity }) {
   );
 }
 
-// ==========================================
-// FADE-IN WRAPPER — lebih bersih dari whileInView berulang
-// ==========================================
 function FadeIn({ children, delay = 0, y = 40, className = "" }) {
   return (
     <motion.div
@@ -177,64 +174,114 @@ const whyData = [
 ];
 
 function WhyChooseUsSection() {
+  const sectionRef = useRef(null);
+
+  // 👇 PERUBAHAN: Menyesuaikan offset agar animasi berjalan lebih seimbang dan posisinya lebih terpusat 👇
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 70%", "end center"],
+  });
+
+  const smooth = useSpring(scrollYProgress, { stiffness: 40, damping: 22, mass: 0.6 });
+
+  const orbY1 = useTransform(smooth, [0, 1], [80,  -80]);
+  const orbY2 = useTransform(smooth, [0, 1], [-60, 100]);
+  const orbX1 = useTransform(smooth, [0, 1], [-30,  30]);
+  const orbX2 = useTransform(smooth, [0, 1], [30,  -30]);
+
+  const headerScale  = useTransform(smooth, [0, 0.3, 0.7], [0.7, 1, 1.08]);
+  const headerOpacity = useTransform(smooth, [0, 0.15, 0.75, 1], [0, 1, 1, 0]);
+  const headerY      = useTransform(smooth, [0, 0.5], [60, -40]);
+  const subtitleX    = useTransform(smooth, [0.1, 0.4], [-80, 0]);
+  const lineScale    = useTransform(smooth, [0.15, 0.45], [0, 1]);
+
+  const cardDirections = [
+    { x: useTransform(smooth, [0.1, 0.5], [-120, 0]), y: useTransform(smooth, [0.1, 0.5], [-60, 0]) },
+    { x: useTransform(smooth, [0.15, 0.55], [120, 0]), y: useTransform(smooth, [0.15, 0.55], [-60, 0]) },
+    { x: useTransform(smooth, [0.2, 0.6], [-120, 0]), y: useTransform(smooth, [0.2, 0.6], [60, 0]) },
+    { x: useTransform(smooth, [0.25, 0.65], [120, 0]), y: useTransform(smooth, [0.25, 0.65], [60, 0]) },
+  ];
+  const cardOpacities = [
+    useTransform(smooth, [0.1, 0.45], [0, 1]),
+    useTransform(smooth, [0.15, 0.5], [0, 1]),
+    useTransform(smooth, [0.2, 0.55], [0, 1]),
+    useTransform(smooth, [0.25, 0.6], [0, 1]),
+  ];
+  const cardFloatY = [
+    useTransform(smooth, [0.4, 1], [0, -50]),
+    useTransform(smooth, [0.4, 1], [0, -25]),
+    useTransform(smooth, [0.4, 1], [0,  25]),
+    useTransform(smooth, [0.4, 1], [0,  50]),
+  ];
+
   return (
-    <section id="mengapa-kami" className="relative py-32 px-6 z-10 overflow-hidden">
-      <div className="max-w-6xl mx-auto relative z-10">
+    // 👇 PERUBAHAN: Menyesuaikan padding (py-16 md:py-24) agar section tidak terlalu jauh ke bawah saat layar standar 👇
+    <section ref={sectionRef} id="mengapa-kami" className="relative py-16 md:py-24 lg:py-32 px-6 z-10 overflow-hidden flex flex-col justify-center min-h-screen">
+      <motion.div style={{ y: orbY1, x: orbX1 }} className="absolute top-10 left-[-80px] w-[300px] lg:w-[500px] h-[300px] lg:h-[500px] rounded-full pointer-events-none will-change-transform" aria-hidden>
+        <div className="w-full h-full rounded-full bg-cyan-500/10 blur-[80px] lg:blur-[120px]" />
+      </motion.div>
+      <motion.div style={{ y: orbY2, x: orbX2 }} className="absolute bottom-0 right-[-80px] w-[250px] lg:w-[400px] h-[250px] lg:h-[400px] rounded-full pointer-events-none will-change-transform" aria-hidden>
+        <div className="w-full h-full rounded-full bg-blue-600/12 blur-[80px] lg:blur-[120px]" />
+      </motion.div>
+      <motion.div style={{ y: orbY1 }} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] lg:w-[600px] h-[150px] lg:h-[250px] rounded-full pointer-events-none will-change-transform" aria-hidden>
+        <div className="w-full h-full rounded-full bg-purple-600/6 blur-[100px] lg:blur-[140px]" />
+      </motion.div>
 
-        {/* Header */}
-        <FadeIn delay={0} y={30}>
-          <div className="text-center mb-20">
-            <p className="text-cyan-400 font-mono tracking-[0.3em] uppercase text-sm mb-4">
-              Keunggulan Kami
-            </p>
-            <h2 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
-              Kenapa Harus Pilih
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 block mt-3 drop-shadow-[0_0_20px_rgba(34,211,238,0.4)]">
-                Tbotics?
-              </span>
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mx-auto mt-8 opacity-60" />
+      <div className="max-w-6xl mx-auto relative z-10 w-full">
+        <motion.div style={{ scale: headerScale, opacity: headerOpacity, y: headerY }} className="text-center mb-12 lg:mb-24 will-change-transform origin-center">
+          <motion.p style={{ x: subtitleX }} className="text-cyan-400 font-mono tracking-[0.3em] uppercase text-xs lg:text-sm mb-4 will-change-transform">
+            Keunggulan Kami
+          </motion.p>
+          <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+            Kenapa Harus Pilih
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 block mt-2 lg:mt-3 drop-shadow-[0_0_20px_rgba(34,211,238,0.4)] lg:drop-shadow-[0_0_30px_rgba(34,211,238,0.6)]">
+              Tbotics?
+            </span>
+          </h2>
+          <div className="relative mx-auto mt-6 lg:mt-8 w-32 lg:w-48 h-1 overflow-visible flex items-center justify-center">
+            <motion.div style={{ scaleX: lineScale }} className="absolute w-full h-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent rounded-full origin-center will-change-transform" />
+            <motion.div style={{ scale: lineScale }} className="relative w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.8)] will-change-transform" />
           </div>
-        </FadeIn>
+        </motion.div>
 
-        {/* Cards Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
           {whyData.map((item, index) => (
-            <FadeIn key={index} delay={index * 0.1} y={40}>
-              <motion.div
-                whileHover={{ y: -6, transition: { duration: 0.3, ease: "easeOut" } }}
-                className={`group bg-[#0B0D21]/80 backdrop-blur-md border ${item.border} p-10 rounded-3xl ${item.glow} h-full cursor-default`}
-              >
-                <div className={`w-14 h-14 ${item.iconBg} rounded-2xl flex items-center justify-center text-3xl mb-6 border ${item.iconBorder} group-hover:scale-110 transition-transform duration-300`}>
+            <motion.div 
+              key={index} 
+              initial={{ opacity: 0, y: 50, x: index % 2 === 0 ? -50 : 50 }}
+              whileInView={{ opacity: 1, y: 0, x: 0 }}
+              viewport={{ once: true, amount: 0.2 }} 
+              transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
+              className="h-full"
+            >
+              <motion.div whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } }} className={`group bg-[#0B0D21]/80 backdrop-blur-md border ${item.border} p-8 lg:p-10 rounded-3xl ${item.glow} h-full cursor-default relative overflow-hidden`}>
+                <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `radial-gradient(circle at 50% 0%, ${item.color === 'cyan' ? 'rgba(34,211,238,0.1)' : item.color === 'blue' ? 'rgba(59,130,246,0.1)' : item.color === 'purple' ? 'rgba(168,85,247,0.1)' : 'rgba(234,179,8,0.1)'} 0%, transparent 65%)` }} />
+                <div className={`w-12 h-12 lg:w-14 lg:h-14 ${item.iconBg} rounded-2xl flex items-center justify-center text-2xl lg:text-3xl mb-5 lg:mb-6 border ${item.iconBorder} group-hover:scale-125 group-hover:rotate-6 transition-all duration-500 relative z-10`}>
                   {item.icon}
                 </div>
-                <h3 className={`text-2xl font-bold text-white mb-3 group-hover:${item.accent} transition-colors duration-300`}>
+                <h3 className="text-xl lg:text-2xl font-bold text-white mb-2 lg:mb-3 transition-colors duration-300 relative z-10">
                   {item.title}
                 </h3>
-                <p className="text-gray-400 leading-relaxed text-base">
+                <p className="text-gray-400 leading-relaxed text-sm lg:text-base relative z-10">
                   {item.desc}
                 </p>
-                {/* Garis aksen bawah */}
-                <div className={`mt-6 w-0 group-hover:w-16 h-0.5 bg-gradient-to-r from-${item.color}-400 to-transparent rounded-full transition-all duration-500`} />
+                <div className="mt-5 lg:mt-6 w-0 group-hover:w-20 lg:group-hover:w-24 h-0.5 rounded-full transition-all duration-700 relative z-10" style={{ background: `linear-gradient(to right, ${item.color === 'cyan' ? '#22d3ee' : item.color === 'blue' ? '#60a5fa' : item.color === 'purple' ? '#c084fc' : '#facc15'}, transparent)` }} />
               </motion.div>
-            </FadeIn>
+            </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );
 }
 
 // ==========================================
-// KOMPONEN ABOUT SECTION (merged dari About.jsx)
+// KOMPONEN ABOUT SECTION
 // ==========================================
 function AboutSection() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isLoading, setIsLoading] = useState(true);
-  const [videoSrc, setVideoSrc] = useState(
-    navigator.onLine ? "https://www.youtube.com/embed/sCJ82fQ_S7A" : ""
-  );
+  const [videoSrc, setVideoSrc] = useState(navigator.onLine ? "https://www.youtube.com/embed/sCJ82fQ_S7A" : "");
 
   useEffect(() => {
     let timer;
@@ -242,7 +289,6 @@ function AboutSection() {
       setIsOnline(true);
       setIsLoading(true);
       setVideoSrc("");
-      // Tunggu 4 detik sampai DNS komputer benar-benar jalan
       timer = setTimeout(() => setVideoSrc("https://www.youtube.com/embed/sCJ82fQ_S7A"), 4000);
     };
     const handleOffline = () => {
@@ -265,39 +311,34 @@ function AboutSection() {
   ];
 
   return (
-    <section id="tentang" className="relative py-32 px-6 z-10 overflow-hidden">
-
+    <section id="tentang" className="relative py-20 lg:py-32 px-6 z-10 overflow-hidden">
       {symbolsData.map((data, index) => (
-        <FloatingSymbol key={index} {...data} />
+        <FloatingSymbol key={index} {...data} className="hidden lg:block" />
       ))}
-
-      <div className="max-w-6xl mx-auto space-y-32 relative z-10">
-
-        {/* ── Judul & Video ── */}
-        <div className="text-center space-y-12 relative">
+      <div className="max-w-6xl mx-auto space-y-20 lg:space-y-32 relative z-10">
+        <div className="text-center space-y-8 lg:space-y-12 relative">
           <FadeIn delay={0}>
-            <h2 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
+            <h2 className="text-3xl lg:text-6xl font-extrabold leading-tight tracking-tight">
               Jaringan Global Robotik
-              <span className="text-cyan-400 block mt-4 drop-shadow-[0_0_20px_rgba(34,211,238,0.6)]">
+              <span className="text-cyan-400 block mt-2 lg:mt-4 drop-shadow-[0_0_20px_rgba(34,211,238,0.6)] text-4xl lg:text-6xl">
                 Tbotics Education
               </span>
             </h2>
-            <p className="text-blue-100/70 text-lg max-w-3xl mx-auto leading-relaxed font-medium mt-8">
+            <p className="text-blue-100/70 text-base lg:text-lg max-w-3xl mx-auto leading-relaxed font-medium mt-6 lg:mt-8">
               Jaringan Global Robotik (Tbotics Education) merupakan jaringan edukasi robotika yang menerapkan konsep
               <span className="text-cyan-300 italic font-bold ml-1"> Learn & Play </span> melalui pendekatan
               Creative Building, Electrical Connectivity, dan Advanced Programming.
               Program dirancang untuk membangun fondasi keterampilan robotika secara terstruktur, aplikatif, dan berkelanjutan.
             </p>
           </FadeIn>
-
           <FadeIn delay={0.1} y={30}>
-            <div className="relative w-full max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden border-2 border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.15)] group bg-[#0B0D21] flex items-center justify-center">
+            <div className="relative w-full max-w-4xl mx-auto aspect-video rounded-2xl lg:rounded-3xl overflow-hidden border-2 border-cyan-500/30 shadow-[0_0_30px_rgba(6,182,212,0.15)] lg:shadow-[0_0_50px_rgba(6,182,212,0.15)] group bg-[#0B0D21] flex items-center justify-center">
               {isOnline ? (
                 <>
                   {isLoading && (
                     <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0B0D21]">
-                      <div className="w-12 h-12 border-4 border-cyan-900 border-t-cyan-400 rounded-full animate-spin shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
-                      <p className="text-cyan-400 mt-4 animate-pulse font-mono text-sm tracking-widest">MEMUAT VIDEO...</p>
+                      <div className="w-10 h-10 lg:w-12 lg:h-12 border-4 border-cyan-900 border-t-cyan-400 rounded-full animate-spin shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
+                      <p className="text-cyan-400 mt-4 animate-pulse font-mono text-xs lg:text-sm tracking-widest">MEMUAT VIDEO...</p>
                     </div>
                   )}
                   {videoSrc && (
@@ -313,9 +354,9 @@ function AboutSection() {
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center text-center p-6 w-full h-full bg-[#0B0D21]">
-                  <span className="text-5xl block mb-4 opacity-80">📶🚫</span>
-                  <h3 className="text-2xl font-bold text-gray-300">Anda sedang Offline</h3>
-                  <p className="text-gray-500 text-base mt-2">
+                  <span className="text-4xl lg:text-5xl block mb-4 opacity-80">📶🚫</span>
+                  <h3 className="text-xl lg:text-2xl font-bold text-gray-300">Anda sedang Offline</h3>
+                  <p className="text-gray-500 text-sm lg:text-base mt-2">
                     Hubungkan perangkat ke internet untuk memutar video profil Tbotics.
                   </p>
                 </div>
@@ -324,57 +365,58 @@ function AboutSection() {
           </FadeIn>
         </div>
 
-        {/* ── Statistik ── */}
         <FadeIn delay={0} y={30}>
-          <div className="grid md:grid-cols-3 gap-12 text-center bg-[#0B0D21]/40 py-12 rounded-3xl border border-blue-900/30 backdrop-blur-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 text-center bg-[#0B0D21]/40 py-8 lg:py-12 rounded-3xl border border-blue-900/30 backdrop-blur-sm">
             <div>
               <Counter to={1000} />
-              <p className="text-blue-200/50 font-bold mt-4 tracking-widest uppercase text-sm">Peserta Terlatih</p>
+              <p className="text-blue-200/50 font-bold mt-2 lg:mt-4 tracking-widest uppercase text-xs lg:text-sm">Peserta Terlatih</p>
             </div>
             <div>
               <Counter to={50} />
-              <p className="text-blue-200/50 font-bold mt-4 tracking-widest uppercase text-sm">Program Dilaksanakan</p>
+              <p className="text-blue-200/50 font-bold mt-2 lg:mt-4 tracking-widest uppercase text-xs lg:text-sm">Program Dilaksanakan</p>
             </div>
             <div>
               <Counter to={20} />
-              <p className="text-blue-200/50 font-bold mt-4 tracking-widest uppercase text-sm">Institusi Bermitra</p>
+              <p className="text-blue-200/50 font-bold mt-2 lg:mt-4 tracking-widest uppercase text-xs lg:text-sm">Institusi Bermitra</p>
             </div>
           </div>
         </FadeIn>
 
-        {/* ── Visi & Misi ── */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           <FadeIn delay={0} y={40}>
-            <div className="bg-[#0B0D21]/80 backdrop-blur-md border border-cyan-900/40 p-10 rounded-3xl shadow-[0_0_30px_-10px_rgba(34,211,238,0.2)] h-full">
+            <div className="bg-[#0B0D21]/80 backdrop-blur-md border border-cyan-900/40 p-8 lg:p-10 rounded-3xl shadow-[0_0_30px_-10px_rgba(34,211,238,0.2)] h-full">
               <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center text-2xl mb-6 border border-cyan-400/50">🔭</div>
-              <h3 className="text-3xl font-bold text-white mb-4">Visi <span className="text-cyan-400">Kami</span></h3>
-              <p className="text-gray-300 leading-relaxed text-lg">
-                Menjadi ekosistem edukasi terdepan yang menyediakan ruang berbagi pengetahuan secara bebas dan terbuka, di mana setiap anak memiliki kesempatan yang sama untuk merancang, merakit, dan memprogram masa depannya melalui teknologi.
+              <h3 className="text-2xl lg:text-3xl font-bold text-white mb-4">Visi <span className="text-cyan-400">Kami</span></h3>
+              <p className="text-gray-300 leading-relaxed text-base lg:text-lg">
+                Menjadi mitra pendidikan terdepan dalam pengembangan pembelajaran robotika dan pendekatan pembelajaran berbasis STEAM yang inovatif, inklusif, dan berdaya saing global, guna membentuk generasi kreatif, kritis, dan siap menghadapi tantangan masa depan.
               </p>
             </div>
           </FadeIn>
           <FadeIn delay={0.12} y={40}>
-            <div className="bg-[#0B0D21]/80 backdrop-blur-md border border-purple-900/40 p-10 rounded-3xl shadow-[0_0_30px_-10px_rgba(168,85,247,0.2)] h-full">
+            <div className="bg-[#0B0D21]/80 backdrop-blur-md border border-purple-900/40 p-8 lg:p-10 rounded-3xl shadow-[0_0_30px_-10px_rgba(168,85,247,0.2)] h-full">
               <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-2xl mb-6 border border-purple-400/50">🚀</div>
-              <h3 className="text-3xl font-bold text-white mb-4">Misi <span className="text-purple-400">Kami</span></h3>
-              <ul className="space-y-4 text-gray-300 text-lg">
+              <h3 className="text-2xl lg:text-3xl font-bold text-white mb-4">Misi <span className="text-purple-400">Kami</span></h3>
+              <ul className="space-y-3 lg:space-y-4 text-gray-300 text-base lg:text-lg">
                 <li className="flex gap-3">
                   <span className="text-purple-400 mt-1">✓</span>
-                  Menyediakan kurikulum robotika yang menyenangkan (Learn & Play) dan mudah dipahami.
+                  Menghadirkan pembelajaran teknologi yang menyenangkan dan bermakna.
                 </li>
                 <li className="flex gap-3">
                   <span className="text-purple-400 mt-1">✓</span>
-                  Mendorong pemikiran kritis dan kemampuan pemecahan masalah (problem solving) melalui proyek nyata.
+                  Membekali siswa dengan keterampilan abad 21 demi menyongsong Indonesia Emas 2045.
                 </li>
                 <li className="flex gap-3">
                   <span className="text-purple-400 mt-1">✓</span>
-                  Membangun komunitas inovator muda yang saling berkolaborasi dan berbagi wawasan teknologi.
+                  Mendukung guru dalam transformasi pembelajaran digital.
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-purple-400 mt-1">✓</span>
+                  Membangun ekosistem pendidikan berbasis inovasi.
                 </li>
               </ul>
             </div>
           </FadeIn>
         </div>
-
       </div>
     </section>
   );
@@ -385,29 +427,57 @@ function AboutSection() {
 // ==========================================
 export default function Home() {
   const heroRef = useRef(null);
+  
+  // State untuk mendeteksi apakah layar kecil (mobile/tablet portrait)
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // Jika lebar layar di bawah 1024px, berarti layar kecil
+      setIsSmallScreen(window.innerWidth < 1024);
+    };
+    handleResize(); // Cek saat pertama kali render
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"]
   });
 
-  // Spring yang sangat lembut — ini kunci smooth scroll
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 35,   // lebih rendah = lebih lambat & smooth
-    damping: 20,     // lebih tinggi = tidak terlalu "bouncy"
-    mass: 0.8,       // sedikit lebih berat = terasa natural
+    stiffness: 35,
+    damping: 20,
+    mass: 0.8,
     restDelta: 0.001
   });
 
-  // Robot: fade + slide bawah + mengecil — range lebih panjang biar tidak tiba-tiba
-  const robotOpacity = useTransform(smoothProgress, [0, 0.75], [1, 0]);
+  // 👇 PERUBAHAN UTAMA 1: Mengatur animasi menghilang berdasarkan ukuran layar 👇
+  // Jika layar kecil (HP/Tablet), robot TIDAK AKAN MENGHILANG (selalu 1)
+  // Jika layar besar (PC), animasi menghilangnya dicepatin di rentang scroll [0, 0.4]
+  const dynamicRobotOpacity = useTransform(smoothProgress, [0, 0.4], [1, isSmallScreen ? 1 : 0]);
+  
   const robotY       = useTransform(smoothProgress, [0, 0.75], [0, 80]);
   const robotScale   = useTransform(smoothProgress, [0, 0.75], [0.8, 0.68]);
   const robotRotate  = useTransform(smoothProgress, [0, 0.75], [0, 12]);
 
-  // Teks hero: fade + naik — sedikit lebih awal supaya feel paralaks
-  const textOpacity  = useTransform(smoothProgress, [0, 0.6], [1, 0]);
-  const textY        = useTransform(smoothProgress, [0, 0.6], [0, -60]);
+  // Efek parallax teks hero juga dicepatin agar selaras (hilang saat di-scroll sedikit)
+  const textOpacity  = useTransform(smoothProgress, [0, 0.3], [1, 0]);
+  const textY        = useTransform(smoothProgress, [0, 0.5], [0, -60]);
+
+  // 👇 PERUBAHAN UTAMA 2: Mematikan interaksi kursor/touch saat robot sudah menghilang 👇
+  const [isPointerEventsEnabled, setIsPointerEventsEnabled] = useState(true);
+
+  // Memantau perubahan nilai opacity robot. Kalau < 0.9, matikan interaksi (ga bisa diklik/diputar)
+  useEffect(() => {
+    const unsubscribe = dynamicRobotOpacity.onChange((v) => {
+      if (v < 0.9) setIsPointerEventsEnabled(false);
+      else setIsPointerEventsEnabled(true);
+    });
+    return unsubscribe;
+  }, [dynamicRobotOpacity]);
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -429,8 +499,6 @@ export default function Home() {
 
   return (
     <main className="bg-[#02050f] text-white min-h-screen relative">
-
-      {/* Ambient glow background */}
       <div className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none" style={{
         background: 'radial-gradient(circle at 10% 10%, rgba(6,182,212,0.08) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(59,130,246,0.05) 0%, transparent 40%)'
       }} />
@@ -438,70 +506,69 @@ export default function Home() {
       <SpaceDustParallax />
 
       {/* ── HERO SECTION ── */}
-      <section ref={heroRef} className="relative h-[180vh] z-10">
-        {/* sticky canvas */}
-        <div className="sticky top-0 h-screen flex items-center justify-center pt-20 px-6 overflow-hidden">
-          <div className="max-w-7xl w-full grid md:grid-cols-2 gap-10 items-center">
+      {/* Menggunakan lg:min-h-[180vh] agar space paralaks scroll hanya ada di layar PC */}
+      <section ref={heroRef} className="relative z-10 min-h-[100vh] lg:h-[180vh] flex lg:block items-center">
+        
+        <div className="lg:sticky lg:top-0 min-h-[100vh] lg:h-screen w-full flex flex-col lg:flex-row items-center justify-start lg:justify-center pt-24 pb-12 lg:pt-28 lg:pb-0 px-5 lg:px-8 overflow-hidden">
+          
+          <div className="max-w-7xl w-full flex flex-col lg:flex-row gap-8 lg:gap-10 items-center justify-between h-auto mt-2 lg:mt-0">
 
-            {/* Teks — bergerak ke atas saat scroll */}
+            {/* Teks */}
             <motion.div
               variants={containerVariants}
               initial="hidden"
               animate="visible"
               style={{ opacity: textOpacity, y: textY }}
-              className="space-y-6 z-10 will-change-transform"
+              className="space-y-4 lg:space-y-6 z-10 will-change-transform w-full text-center lg:text-left" 
             >
-              <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl font-bold leading-tight relative z-20">
-                <span className="text-gray-200">
+              <motion.h1 variants={itemVariants} className="font-bold leading-tight relative z-20">
+                <span className="text-gray-200 text-3xl sm:text-4xl md:text-5xl lg:text-6xl block">
                   <TypingText text="Lebih Percaya Diri, Hadapi Masa Depan" />
                 </span>
-                <br />
-                bersama <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 font-black uppercase tracking-widest text-6xl md:text-8xl drop-shadow-[0_0_15px_rgba(0,209,255,0.5)]">
+                <span className="hidden lg:inline text-gray-200 text-2xl sm:text-4xl lg:text-4xl">bersama <br /></span>
+                <span className="lg:hidden block text-xl sm:text-2xl text-gray-400 mt-2 sm:mt-4">bersama</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 font-black uppercase tracking-widest text-5xl sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-[0_0_15px_rgba(0,209,255,0.5)] leading-none mt-1 block lg:inline">
                   TBOTICS
                 </span>
               </motion.h1>
 
-              <motion.p variants={itemVariants} className="text-gray-400 text-lg md:text-xl max-w-lg">
+              <motion.p variants={itemVariants} className="text-gray-400 text-sm sm:text-lg lg:text-xl max-w-lg mx-auto lg:mx-0 hidden sm:block">
                 Memberdayakan generasi inovator berikutnya melalui pendidikan robotika praktis untuk SD hingga SMP. Kuasai mesin masa depan, hari ini.
               </motion.p>
 
-              <motion.div variants={itemVariants} className="flex gap-4 pt-4">
+              <motion.div variants={itemVariants} className="flex justify-center lg:justify-start gap-3 sm:gap-4 pt-3 lg:pt-4">
                 <button
                   onClick={() => window.open(waLink, '_blank')}
-                  className="border border-cyan-400 text-cyan-400 px-8 py-3 rounded-lg font-semibold hover:bg-cyan-400 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(0,209,255,0.3)] cursor-pointer"
+                  className="border border-cyan-400 text-cyan-400 px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg font-semibold text-sm sm:text-base hover:bg-cyan-400 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(0,209,255,0.3)] cursor-pointer"
                 >
                   Mulai Sekarang
                 </button>
                 <button
                   onClick={scrollToProgram}
-                  className="text-white hover:text-cyan-400 transition-colors duration-300 font-semibold cursor-pointer"
+                  className="text-white hover:text-cyan-400 transition-colors duration-300 font-semibold text-sm sm:text-base cursor-pointer px-2"
                 >
                   Lihat Kursus →
                 </button>
               </motion.div>
             </motion.div>
 
-            {/* Robot — fade + melorot saat scroll */}
+            {/* Robot */}
             <motion.div
               initial={{ opacity: 0, scale: 0.75 }}
               animate={{ opacity: 1, scale: 0.8 }}
               transition={{ duration: 1.2, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                opacity: robotOpacity,
-                y: robotY,
-                scale: robotScale,
-                rotate: robotRotate,
-              }}
-              className="z-10 will-change-transform"
+              style={{ opacity: dynamicRobotOpacity, y: robotY, scale: robotScale, rotate: robotRotate }}
+              className={`z-10 will-change-transform w-full flex justify-center lg:justify-end lg:w-1/2 relative ${!isPointerEventsEnabled ? 'pointer-events-none' : ''}`}
             >
-              <Suspense fallback={
-                <div className="h-[400px] flex items-center justify-center text-cyan-400 animate-pulse font-mono">
-                  Memuat Robot...
-                </div>
-              }>
-                <Robot3D />
-              </Suspense>
+              <div className="w-[110vw] h-[320px] sm:h-[400px] relative left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 lg:left-auto lg:w-[600px] lg:h-[500px] xl:w-[700px] xl:h-[600px] flex justify-center items-center">
+                <Suspense fallback={
+                  <div className="h-full flex items-center justify-center text-cyan-400 animate-pulse font-mono text-xs sm:text-base">
+                    Memuat...
+                  </div>
+                }>
+                  <Robot3D />
+                </Suspense>
+              </div>
             </motion.div>
 
           </div>
