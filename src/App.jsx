@@ -7,6 +7,7 @@ import Navbar from './components/Navbar/Navbar';
 import SpaceBackground from './components/Background/SpaceBackground';
 import Home from './components/Home/Home';
 // import About from './components/About/About';
+import Event from './components/Event/Event';
 import Programs, { programsData } from './components/Programs/Programs';
 import Contact from './components/Contact/Contact';
 import Loading from './components/Loading/Loading';
@@ -21,8 +22,6 @@ import logoWhite from './assets/Logo Tbotics White.png';
 const LandingPage = () => (
   <main>
     <Home />
-    {/* <About /> */}
-    <Programs />
     <Contact />
   </main>
 );
@@ -74,7 +73,9 @@ function App() {
 
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/program" element={<Programs />} />
           <Route path="/program/:id" element={<ProgramDetail />} />
+          <Route path="/event" element={<Event />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
