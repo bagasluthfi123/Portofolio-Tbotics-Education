@@ -1104,7 +1104,7 @@ function WaktuEdukasiSection() {
                   ))}
                 </div>
 
-                <div className="space-y-2 pt-1">
+                {/* <div className="space-y-2 pt-1">
                   {[
                     { label: 'Teori & Konsep', pct: 30, color: '#22d3ee' },
                     { label: 'Praktik Merakit', pct: 50, color: '#a855f7' },
@@ -1127,7 +1127,7 @@ function WaktuEdukasiSection() {
                       </div>
                     </div>
                   ))}
-                </div>
+                </div> */}
               </div>
             </div>
           </FadeIn>
@@ -1269,9 +1269,99 @@ const showcaseSteps = [
   // },
 ];
 
+
 // ==========================================
 // ANIMATED CONNECTOR — scroll-driven flow line
 // ==========================================
+function AnimatedConnector({ color = '#22d3ee' }) {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+
+  // Line mengisi dari 0% → 100% saat scroll melewati elemen
+  const scaleY = useTransform(scrollYProgress, [0.1, 0.9], [0, 1]);
+  const opacity = useTransform(scrollYProgress, [0.05, 0.15, 0.85, 0.95], [0, 1, 1, 0]);
+
+  // Dot bergerak mengikuti progress line
+  const dotY = useTransform(scrollYProgress, [0.1, 0.9], ['0%', '100%']);
+  const dotOpacity = useTransform(scrollYProgress, [0.1, 0.2, 0.8, 0.9], [0, 1, 1, 0]);
+
+  return (
+    <div
+      ref={ref}
+      className="flex flex-col items-center my-16 lg:my-20"
+      style={{ height: '120px', position: 'relative' }}
+    >
+      {/* Track background — garis abu tipis */}
+      <div
+        className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-px"
+        style={{ background: 'rgba(255,255,255,0.06)' }}
+      />
+
+      {/* Animated fill line */}
+      <motion.div
+        style={{
+          scaleY,
+          opacity,
+          transformOrigin: 'top',
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          translateX: '-50%',
+          width: '2px',
+          height: '100%',
+          background: `linear-gradient(to bottom, ${color}, ${color}80)`,
+          boxShadow: `0 0 8px ${color}60`,
+          borderRadius: '999px',
+        }}
+      />
+
+      {/* Moving dot */}
+      <motion.div
+        style={{
+          top: dotY,
+          opacity: dotOpacity,
+          position: 'absolute',
+          left: '50%',
+          translateX: '-50%',
+          translateY: '-50%',
+          width: '10px',
+          height: '10px',
+          borderRadius: '50%',
+          background: color,
+          boxShadow: `0 0 16px ${color}, 0 0 6px ${color}`,
+        }}
+      />
+
+      {/* Arrow tip di bawah */}
+      <motion.div
+        style={{ opacity }}
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0"
+      >
+        {/* Chevron triple */}
+        {[0, 1, 2].map((n) => (
+          <motion.div
+            key={n}
+            animate={{ opacity: [0.2, 1, 0.2], y: [0, 4, 0] }}
+            transition={{ duration: 1.2, repeat: Infinity, delay: n * 0.18 }}
+            style={{
+              width: 0,
+              height: 0,
+              borderLeft: '5px solid transparent',
+              borderRight: '5px solid transparent',
+              borderTop: `6px solid ${color}`,
+              marginBottom: '2px',
+              filter: `drop-shadow(0 0 4px ${color})`,
+            }}
+          />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
 function TiltPhoto({ img, tag, hex, color }) {
   const frameRef = useRef(null);
   const innerRef = useRef(null);
@@ -1327,12 +1417,16 @@ function TiltPhoto({ img, tag, hex, color }) {
         style={{ transition: 'transform 0.12s ease', transformStyle: 'preserve-3d' }}
       >
         {/* ✅ FIXED: tinggi fixed di tablet agar tidak terpotong */}
+        {/* ✅ FIXED: Mengunci rasio card menjadi kotak (1/1) dan memaksa gambar tampil utuh (contain) */}
         <div
-          className="relative w-full overflow-hidden"
-          style={{
-            height: isTablet ? '260px' : undefined,
-            aspectRatio: isTablet ? undefined : '4/3',
-            backgroundColor: '#02050f',
+          className="relative w-full overflow-hidden flex justify-center items-center"
+          style={{ 
+            // Kita pakai rasio portrait standar (misal 3:4 atau 4:5). 
+            // 3/4 biasanya pas untuk foto HP vertikal.
+            aspectRatio: '3 / 4', 
+            // Batasi tinggi maksimal agar tidak menjulur terlalu panjang ke bawah layar
+            maxHeight: '400px', // Kamu bisa sesuaikan angka ini (misal 450px atau 500px)
+            backgroundColor: '#02050f' 
           }}
         >
           <img
@@ -1341,13 +1435,13 @@ function TiltPhoto({ img, tag, hex, color }) {
             loading="lazy"
             decoding="async"
             style={{
-              position: 'absolute',
-              inset: 0,
               width: '100%',
               height: '100%',
-              // ✅ KUNCI: contain di tablet agar foto tidak terpotong sama sekali
-              objectFit: isTablet ? 'contain' : 'cover',
-              objectPosition: 'center top',
+              // Karena bingkai sudah portrait, kita bisa pakai cover lagi 
+              // agar penuh tanpa space hitam, dan karena rasio mirip, 
+              // crop-nya tidak akan se-ekstrem sebelumnya.
+              objectFit: 'cover', 
+              objectPosition: 'center',
             }}
           />
         </div>
