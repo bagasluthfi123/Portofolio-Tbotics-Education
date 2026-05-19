@@ -37,5 +37,6 @@ export default defineConfig({
     })
   ],
   // Base path untuk GitHub Pages (JANGAN DIHAPUS)
-  base: '/Portofolio-Tbotics-Education/',
+  // base: '/Portofolio-Tbotics-Education/'
+  base: '/'
 })
