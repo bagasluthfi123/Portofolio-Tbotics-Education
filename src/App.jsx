@@ -1,22 +1,26 @@
+// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ReactLenis } from 'lenis/react';
 import { AnimatePresence } from 'framer-motion';
 
-import Navbar from './components/Navbar/Navbar';
+// 1. Layouts (Pindah ke folder Layout)
+import Navbar from './components/Layouts/Navbar'; 
+
+// 2. Pages (Pindah ke folder Pages)
+import Home from './pages/Home';
+import Programs from './pages/Programs';
+import ProgramDetail from './pages/ProgramDetail';
+import Event from './pages/Event';
+import Contact from './pages/Contact';
+
+// 3. Components & Data
 import SpaceBackground from './components/Background/SpaceBackground';
-import Home from './components/Home/Home';
-// import About from './components/About/About';
-import Event from './components/Event/Event';
-import Programs, { programsData } from './components/Programs/Programs';
-import Contact from './components/Contact/Contact';
-import Loading from './components/Loading/Loading';
-import ProgramDetail from './components/Programs/ProgramDetail';
-
-// 👇 1. TAMBAHKAN IMPORT CHATBOT DI SINI 👇
 import Chatbot from './components/Chatbot/Chatbot';
+import Loading from './components/Loading/Loading';
+import { programsData } from './data/ProgramData'; // Data terpusat
 
-// Import Logo untuk Preloading
+// Import Logo
 import logoWhite from './assets/Logo Tbotics White.png';
 
 const LandingPage = () => (
@@ -30,24 +34,17 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const imagesToCache = [
-      logoWhite,
-      ...programsData.map(p => p.image)
-    ];
-
-    const preloadImage = (src) => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.src = src;
-        img.onload = resolve;
-        img.onerror = resolve;
-      });
-    };
+    const imagesToCache = [logoWhite, ...programsData.map(p => p.image)];
+    const preloadImage = (src) => new Promise((resolve) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = resolve;
+      img.onerror = resolve;
+    });
 
     const initApp = async () => {
       const startTime = Date.now();
       await Promise.all(imagesToCache.map(src => preloadImage(src)));
-      
       const timeElapsed = Date.now() - startTime;
       const minLoadingTime = 2500; 
 
@@ -57,7 +54,6 @@ function App() {
         setIsLoading(false);
       }
     };
-
     initApp();
   }, []);
 
@@ -83,9 +79,7 @@ function App() {
           <p>&copy; {new Date().getFullYear()} Tbotics Education. Memberdayakan Generasi Inovator.</p>
         </footer>
 
-        {/* 👇 2. TAMBAHKAN KOMPONEN CHATBOT TEPAT DI BAWAH FOOTER 👇 */}
         <Chatbot />
-
       </div>
     </ReactLenis>
   );

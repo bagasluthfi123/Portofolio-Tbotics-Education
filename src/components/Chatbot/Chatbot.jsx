@@ -50,7 +50,7 @@ export default function Chatbot() {
 
   // Fungsi untuk tombol WhatsApp di dalam chat
   const handleWhatsApp = () => {
-    const waNumber = "6285162534164";
+    const waNumber = "6285155232513";
     const waMessage = "Halo Admin Tbotics, saya butuh bantuan dari website.";
     window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`, "_blank");
   };
